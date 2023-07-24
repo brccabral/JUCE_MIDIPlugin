@@ -28,6 +28,9 @@ MIDIVolumeAudioProcessorEditor::MIDIVolumeAudioProcessorEditor (MIDIVolumeAudioP
  
     // this function adds the slider to the editor
     addAndMakeVisible (&midiVolume);
+     
+    // add the listener to the slider
+    midiVolume.addListener (this);
 }
 
 MIDIVolumeAudioProcessorEditor::~MIDIVolumeAudioProcessorEditor()
@@ -53,4 +56,9 @@ void MIDIVolumeAudioProcessorEditor::resized()
 
     // sets the position and size of the slider with arguments (x, y, width, height)
     midiVolume.setBounds (40, 30, 20, getHeight() - 60);
+}
+
+void MIDIVolumeAudioProcessorEditor::sliderValueChanged (juce::Slider* slider)
+{
+    audioProcessor.noteOnVel = midiVolume.getValue();
 }
