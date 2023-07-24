@@ -12,14 +12,14 @@
 //==============================================================================
 MIDIVolumeAudioProcessor::MIDIVolumeAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
-     : AudioProcessor (BusesProperties()
-                     #if ! JucePlugin_IsMidiEffect
-                      #if ! JucePlugin_IsSynth
-                       .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
-                      #endif
-                       .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
-                     #endif
-                       )
+    : AudioProcessor(BusesProperties()
+#if !JucePlugin_IsMidiEffect
+#if !JucePlugin_IsSynth
+                         .withInput("Input", juce::AudioChannelSet::stereo(), true)
+#endif
+                         .withOutput("Output", juce::AudioChannelSet::stereo(), true)
+#endif
+      )
 #endif
 {
 }
@@ -36,29 +36,29 @@ const juce::String MIDIVolumeAudioProcessor::getName() const
 
 bool MIDIVolumeAudioProcessor::acceptsMidi() const
 {
-   #if JucePlugin_WantsMidiInput
+#if JucePlugin_WantsMidiInput
     return true;
-   #else
+#else
     return false;
-   #endif
+#endif
 }
 
 bool MIDIVolumeAudioProcessor::producesMidi() const
 {
-   #if JucePlugin_ProducesMidiOutput
+#if JucePlugin_ProducesMidiOutput
     return true;
-   #else
+#else
     return false;
-   #endif
+#endif
 }
 
 bool MIDIVolumeAudioProcessor::isMidiEffect() const
 {
-   #if JucePlugin_IsMidiEffect
+#if JucePlugin_IsMidiEffect
     return true;
-   #else
+#else
     return false;
-   #endif
+#endif
 }
 
 double MIDIVolumeAudioProcessor::getTailLengthSeconds() const
@@ -68,8 +68,8 @@ double MIDIVolumeAudioProcessor::getTailLengthSeconds() const
 
 int MIDIVolumeAudioProcessor::getNumPrograms()
 {
-    return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
-                // so this should be at least 1, even if you're not really implementing programs.
+    return 1; // NB: some hosts don't cope very well if you tell them there are 0 programs,
+              // so this should be at least 1, even if you're not really implementing programs.
 }
 
 int MIDIVolumeAudioProcessor::getCurrentProgram()
@@ -77,21 +77,21 @@ int MIDIVolumeAudioProcessor::getCurrentProgram()
     return 0;
 }
 
-void MIDIVolumeAudioProcessor::setCurrentProgram (int index)
+void MIDIVolumeAudioProcessor::setCurrentProgram(int index)
 {
 }
 
-const juce::String MIDIVolumeAudioProcessor::getProgramName (int index)
+const juce::String MIDIVolumeAudioProcessor::getProgramName(int index)
 {
     return {};
 }
 
-void MIDIVolumeAudioProcessor::changeProgramName (int index, const juce::String& newName)
+void MIDIVolumeAudioProcessor::changeProgramName(int index, const juce::String &newName)
 {
 }
 
 //==============================================================================
-void MIDIVolumeAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void MIDIVolumeAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
@@ -104,53 +104,52 @@ void MIDIVolumeAudioProcessor::releaseResources()
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
-bool MIDIVolumeAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+bool MIDIVolumeAudioProcessor::isBusesLayoutSupported(const BusesLayout &layouts) const
 {
-  #if JucePlugin_IsMidiEffect
-    juce::ignoreUnused (layouts);
+#if JucePlugin_IsMidiEffect
+    juce::ignoreUnused(layouts);
     return true;
-  #else
+#else
     // This is the place where you check if the layout is supported.
     // In this template code we only support mono or stereo.
     // Some plugin hosts, such as certain GarageBand versions, will only
     // load plugins that support stereo bus layouts.
-    if (layouts.getMainOutputChannelSet() != juce::AudioChannelSet::mono()
-     && layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo())
+    if (layouts.getMainOutputChannelSet() != juce::AudioChannelSet::mono() && layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo())
         return false;
 
-    // This checks if the input layout matches the output layout
-   #if ! JucePlugin_IsSynth
+        // This checks if the input layout matches the output layout
+#if !JucePlugin_IsSynth
     if (layouts.getMainOutputChannelSet() != layouts.getMainInputChannelSet())
         return false;
-   #endif
+#endif
 
     return true;
-  #endif
+#endif
 }
 #endif
 
-void MIDIVolumeAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
+void MIDIVolumeAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce::MidiBuffer &midiMessages)
 {
     buffer.clear();
- 
+
     juce::MidiBuffer processedMidi;
- 
+
     for (const auto metadata : midiMessages)
     {
         auto message = metadata.getMessage();
         const auto time = metadata.samplePosition;
- 
+
         if (message.isNoteOn())
         {
-            message = juce::MidiMessage::noteOn (message.getChannel(),
-                                                 message.getNoteNumber(),
-                                                 (juce::uint8) noteOnVel);
+            message = juce::MidiMessage::noteOn(message.getChannel(),
+                                                message.getNoteNumber(),
+                                                (juce::uint8)noteOnVel);
         }
- 
-        processedMidi.addEvent (message, time);
+
+        processedMidi.addEvent(message, time);
     }
- 
-    midiMessages.swapWith (processedMidi);
+
+    midiMessages.swapWith(processedMidi);
 }
 
 //==============================================================================
@@ -159,20 +158,20 @@ bool MIDIVolumeAudioProcessor::hasEditor() const
     return true; // (change this to false if you choose to not supply an editor)
 }
 
-juce::AudioProcessorEditor* MIDIVolumeAudioProcessor::createEditor()
+juce::AudioProcessorEditor *MIDIVolumeAudioProcessor::createEditor()
 {
-    return new MIDIVolumeAudioProcessorEditor (*this);
+    return new MIDIVolumeAudioProcessorEditor(*this);
 }
 
 //==============================================================================
-void MIDIVolumeAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
+void MIDIVolumeAudioProcessor::getStateInformation(juce::MemoryBlock &destData)
 {
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
 }
 
-void MIDIVolumeAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+void MIDIVolumeAudioProcessor::setStateInformation(const void *data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
@@ -180,7 +179,7 @@ void MIDIVolumeAudioProcessor::setStateInformation (const void* data, int sizeIn
 
 //==============================================================================
 // This creates new instances of the plugin..
-juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
+juce::AudioProcessor *JUCE_CALLTYPE createPluginFilter()
 {
     return new MIDIVolumeAudioProcessor();
 }
