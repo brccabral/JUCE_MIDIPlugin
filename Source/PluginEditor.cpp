@@ -61,4 +61,6 @@ void MIDIVolumeAudioProcessorEditor::resized()
 void MIDIVolumeAudioProcessorEditor::sliderValueChanged(juce::Slider *slider)
 {
     audioProcessor.noteOnVel = midiVolume.getValue();
+    DBG(midiVolume.getValue());
+    DBG((juce::uint8)midiVolume.getValue());
 }

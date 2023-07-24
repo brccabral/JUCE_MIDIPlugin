@@ -141,9 +141,11 @@ void MIDIVolumeAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, ju
 
         if (message.isNoteOn())
         {
+            // message.setVelocity(noteOnVel); // * this needs to be double from 0.0 to 1.0
             message = juce::MidiMessage::noteOn(message.getChannel(),
                                                 message.getNoteNumber(),
                                                 (juce::uint8)noteOnVel);
+            DBG(message.getDescription());
         }
 
         processedMidi.addEvent(message, time);
