@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="FiMldW" name="MIDIVolume" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
+              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
+              pluginCharacteristicsValue="pluginIsMidiEffectPlugin,pluginProducesMidiOut,pluginWantsMidiIn"
+              pluginFormats="buildVST3">
   <MAINGROUP id="TroxnC" name="MIDIVolume">
     <GROUP id="{A93B2F64-F101-C05D-E4D3-0398DDD6D897}" name="Source">
       <FILE id="pjtEzq" name="PluginProcessor.cpp" compile="1" resource="0"
